@@ -1,0 +1,22 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.network "private_network", ip: "192.168.162.111"
+  # config.ssh.forward_agent = true
+  # config.ssh.forward_x11 = true
+  config.vm.hostname = "dev.sce212.ajou.ac.kr"
+  # default: config.vm.synced_folder ".", "/vagrant"
+  # config.vm.synced_folder ".", "/vagrant", type: "smb"
+  config.vm.provision "file", source: "config/smb.conf", destination: "$HOME/smb.conf"
+  config.vm.provision "file", source: "config/smbuser", destination: "$HOME/smbuser"
+  config.vm.provision "file", source: "config/.vimrc", destination: "$HOME/.vimrc"
+  config.vm.provision "file", source: "config/dracula.vim", destination: "$HOME/dracula.vim"
+  config.vm.provision "file", source: "config/.sce212.bashrc", destination: "$HOME/.sce212.bashrc"
+  config.vm.provision "file", source: "config/.bashrc", destination: "$HOME/.bashrc"
+  config.vm.provision :shell, path: "bootstrap.sh"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+  end
+end
